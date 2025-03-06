@@ -1,17 +1,23 @@
 // Your Google API Key and OAuth client ID
 const CLIENT_ID = '72180639473-r8t473dmj2qb88s7veov5acc0jc7ujlb.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyDPZACSSc4bb4Hta_hpyqHVD5FWtzTCLiM';
-const SCOPES = 'https://www.googleapis.com/auth/gmail.send';
+const SCOPES = 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/spreadsheets';
 
 // Load the Google API client and initialize OAuth
 function initClient() {
   gapi.client.init({
-    apiKey: API_KEY,
-    clientId: CLIENT_ID,
-    scope: SCOPES,
-    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"],
+    apiKey: API_KEY, // API key
+    clientId: CLIENT_ID, // client ID
+    scope: SCOPES,  // Request permissions for Gmail and Sheets
+    discoveryDocs: [
+      "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
+      "https://sheets.googleapis.com/$discovery/rest?version=v4"  // Add discovery doc for Sheets API
+    ],
   }).then(() => {
     console.log("Google API client initialized");
+    // Now you can call Gmail and Sheets API functions
+  }).catch(error => {
+    console.error("Error initializing Google API client: ", error);
   });
 }
 
@@ -19,6 +25,11 @@ function initClient() {
 function handleAuthClick() {
   gapi.auth2.getAuthInstance().signIn().then(() => {
     console.log("User signed in");
+    // Now that the user is signed in, you can call the APIs
+    // Initialize both Gmail and Sheets services
+    initClient();
+  }).catch(error => {
+    console.error("Error signing in: ", error);
   });
 }
 
