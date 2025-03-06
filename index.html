@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      width: 100%;
+      height: 100px;
+      background: url('/images/header.png') no-repeat center center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      padding-left: 10px;
+      box-sizing: border-box;
+    }
+
+    .header img.logo {
+      height: 90px; /* Adjust size of logo */
+      margin-right: 10px; /* Space between logo and text */
+      margin-bottom: 35px;
+      margin-top:10px;
+      margin-left:10px;
+    }
+
+    .header .header-text {
+      font-size: 32px;
+      font-weight: bold;
+      color: white;
+    }
+
+  
+
+	.client-company-logo-section {
+      //position: absolute; 
+      //top: 120px; 
+      left: 70px; /* Adjust left position as needed */
+      max-width: 800px;
+      width: auto; /* Adjust width to content */
+      padding: 0; /* No additional padding */
+      box-sizing: border-box; /* Include padding in width/height calculation */
+    }
+
+    
+    .client-company-logo-section img {
+      max-width: 300px; /* Adjust as needed */
+      height: 150px; /* Maintain aspect ratio */
+      display: block; /* Ensure it behaves as a block-level element */
+      margin-left: 565px; /* Ensure no margin on the left */
+    }
+	
+    /* Consent Section */
+    .consent {
+      font-size: 16px;
+      text-align: justify;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    /* OTP Form Section */
+    #header-title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    .form-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 5px 35px 25px 0;
+    }
+
+    .form-group label {
+      font-size: 16px;
+      width: 150px;
+      text-align: right;
+      margin-right: 10px;
+    }
+
+    .form-group input {
+      padding: 8px;
+      font-size: 14px;
+      width: 220px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .form-group button {
+      padding: 8px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-left: 10px;
+    }
+
+    .form-group button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .bin{
+      font-size: 14px;
+      font-style: italic;
+      margin-left:380px;
+    }
+
+    .waiting-otp{
+      font-size: 14px;
+      font-style: italic;
+      margin-left:50px;
+      display:none;
+    }
+	
+    /* Google Form iframe */
+    #form-section {
+      display: none;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 800px;
+      height: 80vh;
+      margin: 0 auto;
+    }
+
+    #form-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Footer */
+	
+	.footer {
+      width: 100%;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      display: flex; /* Use flexbox to align text and image */
+      align-items: center; /* Align items vertically */
+      background: url('/images/footer.png') no-repeat center center;
+      padding: 0px;
+      color: white; /* Text color for footer */
+    }
+
+    .footer-text {
+      flex: 1; /* Use flex to take up remaining space */
+      text-align: left; /* Align text to the left */
+      margin-left: 20px; /* Add some margin to the left */
+      font-size: 16px; /* Adjust font size as needed */
+    }
+
+    
+    .hidden {
+      display: none;
+    }
+  </style>
+   <script src="app.js"></script> 
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <img src="/images/DCS_logo.png" alt="Logo" class="logo">
+  <div class="header-text">POS OPTION FORM</div>
+</div>
+
+<!-- Client Logo -->
+<div id="client-company-logo-section" class="client-company-logo-section">
+  <img src="/images/sunway.jpg" alt="Client Logo">
+</div>
+
+<!-- Consent Text -->
+<div class="consent">
+  We are the nominated Point of Sale (POS) system integrator for Sunway Group. To ensure a smooth and efficient integration process, please complete the POS Option Form. Your detailed input will help our team tailor the integration to meet your specific needs. If you have any questions, feel free to reach out to our support team. <br><br>
+        By submitting your registration, you give consent to DCS Synthesis Pte Ltd to use your personal data for the purposes described above.
+</div>
+
+<!-- OTP Section -->
+<div id="header-title">OTP Verification</div>
+<div id="email-section">
+  <div class="form-group">
+    <label>Email:</label>
+    <input type="email" id="email">
+    <button type="button" id="sendOtpButton" onclick="sendOTP()">Send OTP</button>
+  </div>
+  <div class="bin"> *If you have not received the verification code,please check your spam or junk mail folder.</div>
+</div>
+
+<div id="otp-section" class="hidden">
+  <div class="form-group">
+    <label>OTP:</label>
+    <input type="text" id="otp">
+    <button type="button" onclick="verifyOTP()">Verify OTP</button>
+    <button type="button" id="resendOtpButton" onclick="resendOTP()" disabled>Resend OTP</button>
+  </div>
+  <div class="waiting-otp">*Please wait up to 1 minute for the OTP. If you don’t receive it, click 'Resend OTP'.</div>
+</div>
+
+<!-- Form Section -->
+<div id="form-section">
+  <iframe id="form-iframe"></iframe>
+</div>
+
+<!-- Footer -->
+ <div class="footer">
+    <p class="footer-text">Powered by DCS Synthesis</p>
+  </div>
+
+  <script>
+        function sendOTP() {
+            const email = document.getElementById('email').value;
+            
+            // Send the OTP request to the backend
+            fetch('/sendOTP', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error sending OTP:', error);
+                document.getElementById('message').innerText = 'Failed to send OTP.';
+            });
+        }
+
+        function verifyOTP() {
+            const email = document.getElementById('email').value;
+            const otp = document.getElementById('otp').value;
+            
+            // Send the OTP verification request to the backend
+            fetch('/verifyOTP', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, otp })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Error verifying OTP:', error);
+                document.getElementById('message').innerText = 'Failed to verify OTP.';
+            });
+        }
+    </script>
+	
+<!-- <script>
+  function sendOTP() {
+    const email = document.getElementById('email').value;
+    if (!email) return alert('Enter email');
+    google.script.run.withSuccessHandler(() => {
+      alert('OTP Sent');
+      document.getElementById('email-section').style.display = 'none';
+      document.getElementById('otp-section').style.display = 'block';
+      document.getElementById('resendOtpButton').disabled = false;
+    }).sendOTP(email);
+  }
+
+  function verifyOTP() {
+    const email = document.getElementById('email').value;
+    const otp = document.getElementById('otp').value;
+    google.script.run.withSuccessHandler((isValid) => {
+      if (isValid) {
+        document.getElementById('consent').style.display = 'none';
+        document.getElementById('client-company-logo-section').style.display = 'none';
+        document.getElementById('otp-section').style.display = 'none';
+        document.getElementById('form-section').style.display = 'block';
+        document.getElementById('form-iframe').src = 'https://docs.google.com/forms/d/e/1FAIpQLSf8rfgMRMJiI2xrjczbjuHugT5NVNfTQ-wbyQ66UVd7xCmCkQ/viewform?embedded=true';
+      } else alert('Invalid OTP');
+    }).verifyOTP(email, otp);
+  }
+
+  function resendOTP() {
+    google.script.run.withSuccessHandler(() => alert('OTP Resent')).sendOTP(document.getElementById('email').value);
+  }
+</script>-->
+
+</body>
+</html>
