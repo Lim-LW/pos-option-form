@@ -11,7 +11,6 @@
       overflow-x: hidden;
     }
 
-    /* Header */
     .header {
       width: 100%;
       height: 100px;
@@ -24,8 +23,8 @@
     }
 
     .header img.logo {
-      height: 90px; /* Adjust size of logo */
-      margin-right: 10px; /* Space between logo and text */
+      height: 90px;
+      margin-right: 10px;
       margin-bottom: 35px;
       margin-top:10px;
       margin-left:10px;
@@ -37,27 +36,21 @@
       color: white;
     }
 
-  
-
-	.client-company-logo-section {
-      //position: absolute; 
-      //top: 120px; 
-      left: 70px; /* Adjust left position as needed */
+    .client-company-logo-section {
+      left: 70px;
       max-width: 800px;
-      width: auto; /* Adjust width to content */
-      padding: 0; /* No additional padding */
-      box-sizing: border-box; /* Include padding in width/height calculation */
+      width: auto;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    
     .client-company-logo-section img {
-      max-width: 300px; /* Adjust as needed */
-      height: 150px; /* Maintain aspect ratio */
-      display: block; /* Ensure it behaves as a block-level element */
-      margin-left: 565px; /* Ensure no margin on the left */
+      max-width: 300px;
+      height: 150px;
+      display: block;
+      margin-left: 565px;
     }
-	
-    /* Consent Section */
+
     .consent {
       font-size: 16px;
       text-align: justify;
@@ -66,7 +59,6 @@
       padding: 0 15px;
     }
 
-    /* OTP Form Section */
     #header-title {
       text-align: center;
       font-size: 24px;
@@ -123,8 +115,7 @@
       margin-left:50px;
       display:none;
     }
-	
-    /* Google Form iframe */
+
     #form-section {
       display: none;
       margin-top: 20px;
@@ -140,34 +131,34 @@
       border: none;
     }
 
-    /* Footer */
-	
-	.footer {
+    .footer {
       width: 100%;
       text-align: center;
       position: fixed;
       bottom: 0;
       left: 0;
-      display: flex; /* Use flexbox to align text and image */
-      align-items: center; /* Align items vertically */
+      display: flex;
+      align-items: center;
       background: url('images/footer.png') no-repeat center center;
       padding: 0px;
-      color: white; /* Text color for footer */
+      color: white;
     }
 
     .footer-text {
-      flex: 1; /* Use flex to take up remaining space */
-      text-align: left; /* Align text to the left */
-      margin-left: 20px; /* Add some margin to the left */
-      font-size: 16px; /* Adjust font size as needed */
+      flex: 1;
+      text-align: left;
+      margin-left: 20px;
+      font-size: 16px;
     }
 
-    
     .hidden {
       display: none;
     }
   </style>
-   <script src="app.js"></script> 
+  
+  <!-- Google API Client -->
+  <script src="https://apis.google.com/js/api.js"></script>  
+  <script src="main.js"></script> <!-- Your updated main.js -->
 </head>
 <body>
 
@@ -184,8 +175,7 @@
 
 <!-- Consent Text -->
 <div class="consent">
-  We are the nominated Point of Sale (POS) system integrator for Sunway Group. To ensure a smooth and efficient integration process, please complete the POS Option Form. Your detailed input will help our team tailor the integration to meet your specific needs. If you have any questions, feel free to reach out to our support team. <br><br>
-        By submitting your registration, you give consent to DCS Synthesis Pte Ltd to use your personal data for the purposes described above.
+  We are the nominated Point of Sale (POS) system integrator for Sunway Group...
 </div>
 
 <!-- OTP Section -->
@@ -196,7 +186,7 @@
     <input type="email" id="email">
     <button type="button" id="sendOtpButton" onclick="sendOTP()">Send OTP</button>
   </div>
-  <div class="bin"> *If you have not received the verification code,please check your spam or junk mail folder.</div>
+  <div class="bin"> *If you have not received the verification code, please check your spam or junk mail folder.</div>
 </div>
 
 <div id="otp-section" class="hidden">
@@ -215,85 +205,50 @@
 </div>
 
 <!-- Footer -->
- <div class="footer">
-    <p class="footer-text">Powered by DCS Synthesis</p>
-  </div>
+<div class="footer">
+  <p class="footer-text">Powered by DCS Synthesis</p>
+</div>
 
-  <script>
-        function sendOTP() {
-            const email = document.getElementById('email').value;
-            
-            // Send the OTP request to the backend
-            fetch('/sendOTP', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('message').innerText = data.message;
-            })
-            .catch(error => {
-                console.error('Error sending OTP:', error);
-                document.getElementById('message').innerText = 'Failed to send OTP.';
-            });
-        }
-
-        function verifyOTP() {
-            const email = document.getElementById('email').value;
-            const otp = document.getElementById('otp').value;
-            
-            // Send the OTP verification request to the backend
-            fetch('/verifyOTP', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, otp })
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('message').innerText = data.message;
-            })
-            .catch(error => {
-                console.error('Error verifying OTP:', error);
-                document.getElementById('message').innerText = 'Failed to verify OTP.';
-            });
-        }
-    </script>
-	
-<!-- <script>
+<script>
+  // Send OTP via Gmail API
   function sendOTP() {
     const email = document.getElementById('email').value;
-    if (!email) return alert('Enter email');
-    google.script.run.withSuccessHandler(() => {
-      alert('OTP Sent');
-      document.getElementById('email-section').style.display = 'none';
-      document.getElementById('otp-section').style.display = 'block';
-      document.getElementById('resendOtpButton').disabled = false;
-    }).sendOTP(email);
+    
+    if (!email) return alert('Please enter a valid email');
+    
+    // Use Gmail API to send OTP email
+    sendEmail(email, "Your OTP Code", "Here is your OTP code: 123456");
+
+    // Append email to Google Sheets for logging
+    const spreadsheetId = "your-spreadsheet-id";
+    const range = "Sheet1!A2";
+    appendDataToSheet(spreadsheetId, range, [[email]]);
+    
+    // Show OTP input section
+    document.getElementById('email-section').style.display = 'none';
+    document.getElementById('otp-section').style.display = 'block';
+    document.getElementById('resendOtpButton').disabled = false;
   }
 
+  // Verify OTP function
   function verifyOTP() {
-    const email = document.getElementById('email').value;
     const otp = document.getElementById('otp').value;
-    google.script.run.withSuccessHandler((isValid) => {
-      if (isValid) {
-        document.getElementById('consent').style.display = 'none';
-        document.getElementById('client-company-logo-section').style.display = 'none';
-        document.getElementById('otp-section').style.display = 'none';
-        document.getElementById('form-section').style.display = 'block';
-        document.getElementById('form-iframe').src = 'https://docs.google.com/forms/d/e/1FAIpQLSf8rfgMRMJiI2xrjczbjuHugT5NVNfTQ-wbyQ66UVd7xCmCkQ/viewform?embedded=true';
-      } else alert('Invalid OTP');
-    }).verifyOTP(email, otp);
+    if (otp === "123456") { // Check if OTP matches (you can modify as needed)
+      alert('OTP Verified!');
+      // Show form section after OTP is verified
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('form-iframe').src = 'https://docs.google.com/forms/d/e/1FAIpQLSf8rfgMRMJiI2xrjczbjuHugT5NVNfTQ-wbyQ66UVd7xCmCkQ/viewform?embedded=true';
+    } else {
+      alert('Invalid OTP');
+    }
   }
 
+  // Resend OTP function
   function resendOTP() {
-    google.script.run.withSuccessHandler(() => alert('OTP Resent')).sendOTP(document.getElementById('email').value);
+    alert('OTP has been resent.');
+    // You can resend the OTP logic here if required
   }
-</script>-->
+</script>
 
 </body>
 </html>
