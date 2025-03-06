@@ -158,7 +158,6 @@
   
   <!-- Google API Client -->
   <script src="https://apis.google.com/js/api.js"></script>  
-  <script src="main.js"></script> 
 </head>
 <body>
 
@@ -214,128 +213,7 @@
   <p class="footer-text">Powered by DCS Synthesis</p>
 </div>
 
-<script>
-  // Generate and Send OTP via Gmail API
-  function sendOTP() {
-    const email = document.getElementById('email').value;
-    
-    if (!email) {
-      alert('Please enter a valid email');
-      return;
-    }
-    
-    const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    
-    // Use Gmail API to send OTP email
-    sendEmail(email, "Your OTP Code", `Here is your OTP code: ${otp}`);
-
-    // Append email and OTP to Google Sheets for logging
-    const spreadsheetId = "1aT1Cvmpl5lKEVq-fzKcJgLuLNBEd7_EzSYos2A1fp98"; // Your Google Sheets ID
-    const range = "Sheet1!A2";  // The range you want to insert data into
-    appendDataToSheet(spreadsheetId, range, [[email, otp]]); // Log email and OTP
-    
-    // Show OTP input section
-    document.getElementById('email-section').style.display = 'none';
-    
-    // Display the OTP section
-    const otpSection = document.getElementById('otp-section');
-    otpSection.classList.remove('hidden');
-    otpSection.style.display = 'block';
-    
-    document.getElementById('resendOtpButton').disabled = false;
-  }
-
-  // Function to send email via Gmail API
-  function sendEmail(to, subject, body) {
-    const email = [
-      "Content-Type: text/plain; charset=UTF-8\n",
-      "MIME-Version: 1.0\n",
-      "Content-Transfer-Encoding: 7bit\n",
-      "to: " + to + "\n",
-      "subject: " + subject + "\n\n",
-      body
-    ].join("");
-
-    const encodedEmail = btoa(email).replace(/\+/g, '-').replace(/\//g, '_');  // URL-safe base64
-
-    const request = gapi.client.gmail.users.messages.send({
-      'userId': 'me',
-      'resource': {
-        'raw': encodedEmail
-      }
-    });
-
-    request.execute();
-  }
-
-  // Function to append email and OTP to Google Sheets
-  function appendDataToSheet(spreadsheetId, range, values) {
-    const params = {
-      spreadsheetId: spreadsheetId,
-      range: range,
-      valueInputOption: "RAW",
-      insertDataOption: "INSERT_ROWS"
-    };
-
-    const valueRangeBody = {
-      values: values
-    };
-
-    const request = gapi.client.sheets.spreadsheets.values.append(params, valueRangeBody);
-    request.then(response => {
-      console.log("Data appended to sheet:", response);
-    }).catch(error => {
-      console.error("Error appending data to sheet:", error);
-    });
-  }
-
-  // Verify OTP function
-  function verifyOTP() {
-    const otp = document.getElementById('otp').value;
-    const enteredEmail = document.getElementById('email').value;
-
-    if (!otp) {
-      alert('Please enter the OTP');
-      return;
-    }
-
-    // Fetch OTP from Google Sheets to verify
-    const spreadsheetId = "1aT1Cvmpl5lKEVq-fzKcJgLuLNBEd7_EzSYos2A1fp98"; // Your Google Sheets ID
-    const range = "Sheet1!A2:B";  // Range where email and OTP are stored
-    const request = gapi.client.sheets.spreadsheets.values.get({
-      spreadsheetId: spreadsheetId,
-      range: range,
-    });
-
-    request.then(response => {
-      const rows = response.result.values;
-      let isValidOTP = false;
-      rows.forEach(row => {
-        if (row[0] === enteredEmail && row[1] === otp) {
-          isValidOTP = true;
-        }
-      });
-
-      if (isValidOTP) {
-        alert('OTP Verified!');
-        // Show the form after OTP is verified
-        document.getElementById('form-section').style.display = 'block';
-        document.getElementById('form-iframe').src = 'https://docs.google.com/forms/d/e/1FAIpQLSf8rfgMRMJiI2xrjczbjuHugT5NVNfTQ-wbyQ66UVd7xCmCkQ/viewform?embedded=true';
-      } else {
-        alert('Invalid OTP');
-      }
-    }).catch(error => {
-      console.error("Error verifying OTP:", error);
-      alert('Error verifying OTP');
-    });
-  }
-
-  // Resend OTP function
-  function resendOTP() {
-    alert('OTP has been resent.');
-    sendOTP();  // Resend the OTP by calling sendOTP again
-  }
-</script>
+ <script src="main.js"></script>
 
 </body>
 </html>
